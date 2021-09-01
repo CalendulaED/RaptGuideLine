@@ -1,0 +1,44 @@
+{
+  "Book": [
+    "BookId",
+    "Title",
+    "PublId"
+  ],
+  "Author": [
+    "AuthId",
+    "AuthName"
+  ],
+  "AuthorBook": [
+    "AuthId",
+    "BookId"
+  ],
+  "Publisher": [
+    "PublID",
+    "PublName",
+    "Address",
+    "Phone"
+  ],
+  "BookCopies": [
+    "BookId",
+    "BranId",
+    "Copies"
+  ],
+  "BookLoans": [
+    "BookId",
+    "BranId",
+    "MembId",
+    "IssueDate",
+    "DueDate"
+  ],
+  "Member": [
+    "MembId",
+    "MembName",
+    "Address",
+    "Phone"
+  ],
+  "LibraryBranch": [
+    "BranId",
+    "BranName",
+    "State"
+  ]
+}

@@ -1,0 +1,106 @@
+% This is the exam template for CS348.
+% Only edit between \begin{questions} and \end{questions} tags.
+% You can use \begin{lstlisting} and \end{lstlisting} tags for codes. Please use 4 white-spaces per indentation.
+% You can use \lstinline{} tag for inline codes. 
+% Please use consistent wording, like, "What is the output of the following SQL statements?" See previous exams.
+% \CorrectChoice is for the right answer, \choice is for the other answers.
+% Please make sure a query, a procedure, etc. compiles correctly and make sure the answer is what you expect
+
+
+\documentclass[12pt]{exam}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{multicol}
+\usepackage{listings}
+\usepackage{enumerate}
+\usepackage{blindtext}
+\usepackage{scrextend}
+\usepackage{graphicx}
+\usepackage{comment}
+
+
+\def\j{\Join}
+\def\project{\pi}
+\def\s{\sigma}
+\def\theta_join{\bowtie}
+\def\ojoin{\setbox0=\hbox{$\bowtie$}%
+  \rule[-.02ex]{.25em}{.4pt}\llap{\rule[\ht0]{.25em}{.4pt}}}
+\def\leftouterjoin{\mathbin{\ojoin\mkern-5.8mu\bowtie}}
+\def\rightouterjoin{\mathbin{\bowtie\mkern-5.8mu\ojoin}}
+\def\fullouterjoin{\mathbin{\ojoin\mkern-5.8mu\bowtie\mkern-5.8mu\ojoin}}
+
+\lstset{
+	language = Python,
+	breaklines=true,
+	showstringspaces=false,
+	tabsize=3
+}
+
+\renewcommand{\choiceshook}{%
+    \setlength{\leftmargin}{15pt}%
+}
+\title{CS 348 - Homework 2 }
+\author{Relational Algebra \\(160 Points)}
+\date{Fall 2020}
+
+
+
+\begin{document}
+
+\maketitle
+\begin{description}
+	\item[Due on: 10/02/2020 ]
+\end{description}
+\noindent
+This assignment is to be completed by individuals. You should only talk to the instructor, and the TA about this assignment. You may also post questions (and not answers) to Campuswire. \\
+
+There will be a 10\% penalty if the homework is submitted 24 hours after the due date, a 15\% penalty if the homework is submitted 48 hours after the due date, or a 20\% penalty if the homework is submitted 72 hours after the due date. The homework will not be accepted after 72 hours, as a solution will be posted by then.\\
+
+For questions 1-3, write your answers on the hw2.tex template file (provided with this homework document) and generate a pdf file. Upload the pdf file to \textbf{Gradescope}. For questions 4-5, create a sql file named \textbf{q45.sql} and write the trigger and procedure there. Upload your \textbf{q45.sql} file to \textbf{Brightspace}.\\
+
+\begin{questions}
+
+\question (70 points) Given below is a relational schema about libraries. Write relational algebra queries for the following questions.\\
+
+\begin{addmargin}[1em]{2em}% 1em left, 2em right
+
+    \textit{Book} (\textbf{\underline{BookId}},  \textit{Title}, \textit{PublId})\\
+    \textit{Author} (\textbf{\underline{AuthId}}, \textit{AuthName})\\
+    \textit{AuthorBook} (\textbf{\underline{ABAuthId}}, \textbf{\underline{ABBookId}})\\
+    \textit{Publisher} (\textbf{\underline{PublId}}, \textit{PublName}, \textit{Address}, \textit{Phone})\\
+    \textit{BookCopies} (\textbf{\underline{BCBookId}, \underline{BCBranId}}, \textit{Copies})\\
+    \textit{BookLoans} (\textbf{\underline{BLBookId}, \underline{BLBranId}, \underline{BLMembId}}, \textit{IssueDate}, \textit{DueDate})\\
+    \textit{Member} (\textbf{\underline{MembId}},  \textit{MembName}, \textit{Address}, \textit{Phone})\\
+    \textit{LibraryBranch} (\textbf{\underline{LBBranId}}, \textit{BranName}, \textit{State})\\
+    
+\end{addmargin}
+
+\begin{choices}
+
+%............................. question 1: Basic RA............... %	
+	\choice(5 points) List the names of all branches in Indiana.\\
+	\textbf{Answer}:\\
+    $\project_{BranName}(\s_{State='Indiana' } (LibraryBranch) )$
+	
+%........................... question 2: Joins (inner join) ............... %
+	\choice(10 points) List book titles for all the books in Indiana branches. Use \textbf{theta join} to write this query. 
+	
+	\textbf{Answer}:\\
+	$ LibrBran \leftarrow \s_{State='Indiana' } (LibraryBranch) $
+	$ LibrBookCopi \leftarrow  LibrBran \theta_join_{LibrBran.BranId =BookCopies.BranId } BookCopies $
+	$ LibrBook \leftarrow  LibrBookCopi \theta_join_{LibrBookCopi.BookId =Book.BookId } Book $
+    $ Result \leftarrow \project_{Title} (LibrBook)$
+	
+%..................... question 3: Joins (natural join)  ............... %
+	\choice(10 points) List the names of members who \textbf{have not} checked out any books. \\
+	\textbf{Answer}:\\
+	$ WithLoans \leftarrow \project_{MembId} (BookLoans)$
+	$ AllMemb \leftarrow \project_{MembId} (Member) $
+	$ NoLoans \leftarrow AllMemb - WithLoans $
+    $ Result \leftarrow \project_{MembName} (NoLoans \j Member) $
+	
+\end{choices}
+
+\end{questions}
+\end{document}
